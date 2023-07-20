@@ -1,0 +1,6 @@
+name=CranckIS
+author=Ghislain Lévêque
+description=A cranck based falling blocks game
+bundleID=cc.leveque.cranckis
+version=0.0.1
+buildNumber=1
