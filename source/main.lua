@@ -30,6 +30,8 @@ local currentState = "menu"
 local prevState = "menu"
 local backgroundImage = gfx.image.new("Images/background")
 
+local DEBUG <const> = false
+
 local function loadMain()
     assert( backgroundImage )
     gfx.sprite.setBackgroundDrawingCallback(
@@ -80,10 +82,10 @@ local function updateGame()
     if crankTicks ~= 0 then
         print(crankTicks)
     end
-    if crankTicks > 0 then
+    if (DEBUG and pd.buttonJustPressed(pd.kButtonDown)) or crankTicks > 0 then
         currentPiece:rotate(staticBlocks, 1)
     end
-    if crankTicks < 0 then
+    if (DEBUG and pd.buttonJustPressed(pd.kButtonUp)) or crankTicks < 0 then
         currentPiece:rotate(staticBlocks, -1)
     end
     if pd.buttonJustPressed(pd.kButtonA) or pd.buttonJustPressed(pd.kButtonB) then
@@ -108,6 +110,8 @@ local function updateGame()
             nextMove = now - timeStep
         end
         nextMove = now + timeStep
+    else
+        currentPiece:update(staticBlocks)
     end
     local linesRemoved = 0
     linesRemoved, staticBlocks = clearFullLines(staticBlocks)

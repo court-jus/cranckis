@@ -60,7 +60,16 @@ class("Piece").extends(BlockList)
 
 function Piece:init()
     self.rotated = 0
+    self.wannaMove = 0
     self.blocks = drawRandomBlock(0, 0)
+end
+
+function Piece:update(blockers)
+    if self.wannaMove == 0 then return end
+    local blocked = movePiece(self.blocks, blockers, 0, self.wannaMove)
+    if not blocked then
+        self.wannaMove = 0
+    end
 end
 
 function Piece:rotate(blockers, direction)
@@ -106,11 +115,15 @@ function Piece:rotate(blockers, direction)
         for _, block in pairs(self.blocks) do
             block:commitMove()
         end
+        self.rotated = (self.rotated + direction) % ROTATIONS_TO_SHIFT
+    elseif direction == 1 then
+        self.rotated = 0
+    elseif direction == -1 then
+        self.rotated = 3
     end
-    self.rotated = (self.rotated + direction) % ROTATIONS_TO_SHIFT
-    if self.rotated == 0 then
+    if (direction == 1 and self.rotated == 0) or (direction == -1 and self.rotated == 3) then
         -- move piece up/down
-        movePiece(self.blocks, blockers, 0, direction)
+        self.wannaMove = direction
     end
 return not commit
 end
